@@ -15,6 +15,9 @@ public class PlayerController : MonoBehaviour
     public GameObject gameOverScreen; //reference to the gameover text/gameobject
     public GameObject winScreen; //reference to the win text/gameobject
 
+    private Vector2 moveInput;
+    public float moveSpeed;
+
     
 
 
@@ -45,11 +48,23 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        moveInput.x = Input.GetAxisRaw("Horizontal");
+        moveInput.y = Input.GetAxisRaw("Vertical");
 
-       
-        
+        rb.velocity = new Vector2(moveInput.x * moveSpeed, moveInput.y * moveSpeed);
 
-            if (Input.GetKeyDown(KeyCode.W))
+        if (moveInput.x < 0f)
+        {
+            defaultSprite.flipX = false;
+        }
+        else if (moveInput.x > 0f)
+        {
+            defaultSprite.flipX = true;
+        }
+
+
+
+            /*if (Input.GetKeyDown(KeyCode.W))
             {
                 rb.transform.position += new Vector3(0, 1f, 0); //if we press w add 1 to the y value (up)
             }
@@ -69,7 +84,7 @@ public class PlayerController : MonoBehaviour
             {
                 rb.transform.position += new Vector3(1f, 0, 0); //if we press d add 1 to the x value (right)
                 defaultSprite.flipX = true; //to flip the sprite on x axis
-            }
+            }*/
 
 
 
