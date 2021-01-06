@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
 
     public GameObject gameOverScreen; //reference to the gameover text/gameobject
     public GameObject winScreen; //reference to the win text/gameobject
+    public GameObject levelEndScreen;
 
     private Vector2 moveInput;
     public float moveSpeed;
@@ -48,19 +49,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        moveInput.x = Input.GetAxisRaw("Horizontal");
-        moveInput.y = Input.GetAxisRaw("Vertical");
 
-        rb.velocity = new Vector2(moveInput.x * moveSpeed, moveInput.y * moveSpeed);
-
-        if (moveInput.x < 0f)
-        {
-            defaultSprite.flipX = false;
-        }
-        else if (moveInput.x > 0f)
-        {
-            defaultSprite.flipX = true;
-        }
 
 
 
@@ -88,7 +77,7 @@ public class PlayerController : MonoBehaviour
 
 
 
-        if (Input.GetKeyDown(KeyCode.R)) //restart button R
+        if (gameOverScreen.activeInHierarchy && Input.GetKeyDown(KeyCode.R)) //restart button R
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); //load the scene again, to get a clean scene
             gameOverScreen.SetActive(false); // deactivates the gameover screen
@@ -105,6 +94,20 @@ public class PlayerController : MonoBehaviour
             Application.Quit(); //if we press escape, close the game (build)
            // UnityEditor.EditorApplication.ExitPlaymode(); //if we press escape, close the game (editor)
 
+        }
+
+        if (levelEndScreen.activeInHierarchy && Input.GetKeyDown(KeyCode.Space))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            levelEndScreen.SetActive(false);
+            Time.timeScale = 1;
+        }
+
+        if (winScreen.activeInHierarchy && Input.GetKeyDown(KeyCode.R))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex -1);
+            winScreen.SetActive(false);
+            Time.timeScale = 1;
         }
 
 
@@ -128,6 +131,12 @@ public class PlayerController : MonoBehaviour
             winScreen.SetActive(true); //activates the winscreen object
             Time.timeScale = 0; //timescale gets set to 0, which means ingame time is stopped, this deactivates most stuff so the game isnt playable after we win
         }
+
+        else if (collision.gameObject.CompareTag("LevelEnd"))
+        {
+            levelEndScreen.SetActive(true); 
+            Time.timeScale = 0;
+        }
     }
 
 
@@ -135,9 +144,22 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate() //fixedupdate for physics (rigidbody)
     {
-        
+        moveInput.x = Input.GetAxisRaw("Horizontal");
+        moveInput.y = Input.GetAxisRaw("Vertical");
+
+        rb.velocity = new Vector2(moveInput.x * moveSpeed, moveInput.y * moveSpeed);
+
+        if (moveInput.x < 0f)
+        {
+            defaultSprite.flipX = false;
+        }
+        else if (moveInput.x > 0f)
+        {
+            defaultSprite.flipX = true;
+        }
+
         // rb.MovePosition(Vector3.Slerp(this.transform.position, target.position, 0.3f)); //moves the rigidbody of the player smooth (slerp) to the position of the target
-        
+
     }
 
 }
